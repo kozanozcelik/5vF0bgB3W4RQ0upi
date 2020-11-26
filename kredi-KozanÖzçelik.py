@@ -6,6 +6,7 @@ Created on Wed Nov 25 12:45:22 2020
 @author: kozanozcelik
 """
 
+# Import libraries
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,6 +18,7 @@ from sklearn.metrics import accuracy_score, mean_squared_error, r2_score
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
 
+# Load data
 df = pd.read_csv(r'/Users/kozanozcelik/Documents/term-deposit-marketing-2020.csv')
 
 pd.set_option('display.max_rows', 500)
@@ -26,6 +28,7 @@ pd.set_option('display.width', 1000)
 df.head(10)
 df.describe()
 
+# Pre-processing
 df['default'] = [1 if x == 'yes' else 0 for x in df.default]
 df['housing'] = [1 if x == 'yes' else 0 for x in df.housing]
 df['loan'] = [1 if x == 'yes' else 0 for x in df.loan]
@@ -58,18 +61,20 @@ for i in range(len(df)):
         df['month'][i] = 12
     
 
-
+# Create dummy variables
 df = pd.get_dummies(df, columns=['job','marital','education','contact','day','month'])
 
-
+# Reshape
 Y = df['y'].values.reshape(-1,1)
 X = df.drop(columns='y')
 
+# Scale data
 scaler = MinMaxScaler()
 
 X_scaled = scaler.fit_transform(X)
 Y_scaled = scaler.fit_transform(Y)
 
+# Split data into train and test sets
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, Y_scaled, test_size=0.3, random_state=42)
 
 #%% SVM
@@ -360,11 +365,3 @@ X.pivot_table(values='duration', columns='month_1', index='clusters', aggfunc='m
 
 # Cluster-0 on the 10th month of the year tend to be more interested in investment
 X.pivot_table(values='duration', columns='month_10', index='clusters', aggfunc='mean', fill_value=np.nan)
-
-
-
-
-
-
-
-
